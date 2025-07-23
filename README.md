@@ -38,3 +38,121 @@ scons compiledb=yes compile_commands.json
 
 This repository comes with a GitHub action that builds the GDExtension for cross-platform use. It triggers automatically for each pushed change. You can find and edit it in [builds.yml](.github/workflows/builds.yml).
 After a workflow run is complete, you can find the file `godot-cpp-template.zip` on the `Actions` tab on GitHub.
+
+
+
+
+# `.gdextension` 文件的生成与作用
+
+`.gdextension` 文件是 Godot 4 引入的**手动创建的配置文件**，用于替代 Godot 3 的 `.gdnlib` 文件。
+
+## 文件创建方式
+
+### 手动创建步骤：
+1. 在文本编辑器中创建新文件
+2. 保存为 `your_extension.gdextension`（名称与你的扩展相关）
+3. 使用以下基本结构填充内容：
+
+```ini
+[configuration]
+entry_symbol = "gdextension_library_init"
+compatibility_minimum = "4.1"
+
+[libraries]
+windows.x86_64 = "res://bin/libgdexample.dll"
+linux.x86_64 = "res://bin/libgdexample.so"
+macos = "res://bin/libgdexample.dylib"
+```
+
+### 关键配置项说明：
+
+| 节           | 键                  | 描述                                                                 |
+|--------------|---------------------|----------------------------------------------------------------------|
+| `[configuration]` | `entry_symbol`        | **必须与 C++ 代码中的函数名匹配**，通常是 `gdextension_library_init` |
+|              | `compatibility_minimum` | 最低支持的 Godot 版本 (如 "4.0", "4.1")                             |
+| `[libraries]`    | `windows.x86_64`       | Windows 平台库文件路径                                                |
+|              | `linux.x86_64`         | Linux 平台库文件路径                                                  |
+|              | `macos`                | macOS 平台库文件路径                                                  |
+| `[dependencies]` | 平台标识              | 依赖的附加库 (可选)                                                  |
+
+## 与代码的关联
+
+### C++ 入口点示例
+`.gdextension` 文件中的 `entry_symbol` 必须与 C++ 代码中的初始化函数匹配：
+
+```cpp
+// 必须与 .gdextension 中的 entry_symbol 完全一致
+extern "C" {
+GDE_EXPORT GDExtensionBool GDE_EXPORT gdextension_library_init(
+    GDExtensionInterfaceGetProcAddress p_get_proc_address,
+    GDExtensionClassLibraryPtr p_library,
+    GDExtensionInitialization *r_initialization
+) {
+    // 初始化代码
+    godot::GDExtensionBinding::InitObject init_obj(p_get_proc_address, p_library, r_initialization);
+    init_obj.register_initializer(initialize_module);
+    init_obj.register_terminator(uninitialize_module);
+    return init_obj.init();
+}
+}
+```
+
+## 配置示例
+
+1. **文件位置**：
+   - 通常放在项目根目录的 `bin/` 或 `addons/your_extension/` 目录
+   - 确保路径与库文件实际位置匹配
+
+2. **多平台支持**：
+   ```ini
+   [libraries]
+   # Windows
+   windows.x86_64 = "res://bin/windows/libgdexample.dll"
+   
+   # Linux
+   linux.x86_64 = "res://bin/linux/libgdexample.so"
+   
+   # macOS (通用二进制)
+   macos = "res://bin/macos/libgdexample.dylib"
+   ```
+
+3. **版本控制**：
+   ```ini
+   [configuration]
+   compatibility_minimum = "4.1"
+   reloadable = true
+   ```
+
+4. **依赖管理** (如果需要)：
+   ```ini
+   [dependencies]
+   windows.x86_64 = [ "res://bin/windows/dependency.dll" ]
+   linux.x86_64 = [ "res://bin/linux/libdependency.so" ]
+   ```
+
+## 工作原理
+
+当 Godot 启动时：
+1. 扫描项目目录查找 `.gdextension` 文件
+2. 根据当前运行平台加载对应的库文件
+3. 通过 `entry_symbol` 查找并调用初始化函数
+4. 注册扩展中定义的类和方法
+
+> **重要提示**：`.gdextension` 文件是纯文本配置文件，不需要特殊工具生成，但必须确保其内容与你的代码和编译输出精确匹配。
+
+
+
+# Godot Extension 编译
+
+## 编译步骤
+
+scons compiledb=yes # 生成编译数据库文件  
+
+scons # 编译
+scons -c # 清理
+
+# 单精度调试版
+scons target=template_debug float_precision=single
+
+# 双精度发布版
+scons target=template_release float_precision=double

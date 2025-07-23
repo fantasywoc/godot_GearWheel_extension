@@ -8,6 +8,7 @@ var points = [
 ]
 
 func _ready() -> void:
+	
 	var example := ExampleClass.new()
 	example.print_type(example)
 	# 调用函数并打印结果

@@ -4,7 +4,7 @@
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/core/defs.hpp>
 #include <godot_cpp/godot.hpp>
-
+#include <godot_cpp/classes/engine.hpp> // Engine类
 #include "example_class.h"
 
 using namespace godot;
@@ -14,6 +14,14 @@ void initialize_gdextension_types(ModuleInitializationLevel p_level)
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
 		return;
 	}
+	// 直接打印版本信息而不检测精度
+    Dictionary version_info = Engine::get_singleton()->get_version_info();
+    UtilityFunctions::print("Godot version: ", 
+        version_info["major"], ".", 
+        version_info["minor"], ".", 
+        version_info["patch"]);
+
+
 	GDREGISTER_CLASS(ExampleClass);
 }
 

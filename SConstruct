@@ -24,6 +24,8 @@ customs = ["custom.py"]
 customs = [os.path.abspath(path) for path in customs]
 
 opts = Variables(customs, ARGUMENTS)
+opts.Add(EnumVariable('float_precision', 'Floating point precision (single or double)', 'single', 
+                      allowed_values=('single', 'double')))
 opts.Update(localEnv)
 
 Help(opts.GenerateHelpText(localEnv))
@@ -39,12 +41,25 @@ Run the following command to download godot-cpp:
 
 env = SConscript("godot-cpp/SConstruct", {"env": env, "customs": customs})
 
+# 添加浮点精度配置
+float_precision = env['float_precision']
+if float_precision == 'double':
+    env.Append(CPPDEFINES=['DOUBLE_PRECISION=1'])
+    print("Building with DOUBLE precision")
+else:
+    env.Append(CPPDEFINES=['SINGLE_PRECISION=1'])
+    print("Building with SINGLE precision")
+
+# 添加构建类型配置
+if env["target"] == "release":
+    env.Append(CCFLAGS=['-O3'])
+    print("Building RELEASE version")
+else:
+    env.Append(CCFLAGS=['-g'])
+    print("Building DEBUG version")
+
 env.Append(CPPPATH=["src/"])
 sources = Glob("src/*.cpp")
-
-
-# if env["target"] == "template_release":
-#     env.Append(CCFLAGS=["-O3", "-DNDEBUG"])  # 禁用调试断言
 
 if env["target"] in ["editor", "template_debug"]:
     try:
@@ -56,6 +71,10 @@ if env["target"] in ["editor", "template_debug"]:
 # .dev doesn't inhibit compatibility, so we don't need to key it.
 # .universal just means "compatible with all relevant arches" so we don't need to key it.
 suffix = env['suffix'].replace(".dev", "").replace(".universal", "")
+
+# 添加精度标识到文件名
+if float_precision == 'double':
+    suffix += ".double"
 
 lib_filename = "{}{}{}{}".format(env.subst('$SHLIBPREFIX'), libname, suffix, env.subst('$SHLIBSUFFIX'))
 
