@@ -5,7 +5,7 @@ import sys
 from methods import print_error
 
 
-libname = "EXTENSION-NAME"
+libname = "EXTENSION-VERLET"
 projectdir = "demo"
 
 localEnv = Environment(tools=["default"], PLATFORM="")
@@ -39,6 +39,10 @@ env = SConscript("godot-cpp/SConstruct", {"env": env, "customs": customs})
 
 env.Append(CPPPATH=["src/"])
 sources = Glob("src/*.cpp")
+
+
+if env["target"] == "template_release":
+    env.Append(CCFLAGS=["-O3", "-DNDEBUG"])  # 禁用调试断言
 
 if env["target"] in ["editor", "template_debug"]:
     try:
