@@ -25,10 +25,10 @@ windows.x86_64.double.debug = "./windows/EXTENSION-NAME.windows.template_debug.x
 windows.x86_64.single.release = "./windows/EXTENSION-NAME.windows.template_release.x86_64.dll"
 windows.x86_64.double.release = "./windows/EXTENSION-NAME.windows.template_release.x86_64.double.dll"
 
-linux.x86_64.single.debug = "./linux/libEXTENSION-VERLET.linux.template_debug.x86_64.so"
-#linux.x86_64.double.debug = "./linux/libEXTENSION-NAME.linux.template_debug.x86_64.double.so"
-#linux.x86_64.single.release = "./linux/libEXTENSION-NAME.linux.template_release.x86_64.so"
-linux.x86_64.double.release = "./linux/libEXTENSION-VERLET.linux.template_release.x86_64.double.so"
+linux.x86_64.single.debug = "./linux/libEXTENSION-NAME.linux.template_debug.x86_64.so"
+linux.x86_64.double.debug = "./linux/libEXTENSION-NAME.linux.template_debug.x86_64.double.so"
+linux.x86_64.single.release = "./linux/libEXTENSION-NAME.linux.template_release.x86_64.so"
+linux.x86_64.double.release = "./linux/libEXTENSION-NAME.linux.template_release.x86_64.double.so"
 
 linux.arm64.single.debug = "./linux/libEXTENSION-NAME.linux.template_debug.arm64.so"
 linux.arm64.double.debug = "./linux/libEXTENSION-NAME.linux.template_debug.arm64.double.so"

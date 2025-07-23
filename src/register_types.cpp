@@ -14,14 +14,14 @@ void initialize_gdextension_types(ModuleInitializationLevel p_level)
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
 		return;
 	}
-	// 直接打印版本信息而不检测精度
+	// 打印版本信息
     Dictionary version_info = Engine::get_singleton()->get_version_info();
     UtilityFunctions::print("Godot version: ", 
         version_info["major"], ".", 
         version_info["minor"], ".", 
         version_info["patch"]);
 
-
+	// 注册类 ExampleClass
 	GDREGISTER_CLASS(ExampleClass);
 }
 

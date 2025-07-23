@@ -5,26 +5,18 @@ import sys
 from methods import print_error
 
 # 库文件名
-libname = "EXTENSION-VERLET"
-# libname = "EXTENSION-NAME"
+libname = "EXTENSION-NAME"
 # 项目路径
 projectdir = "demo"
 
 localEnv = Environment(tools=["default"], PLATFORM="")
 
-# Build profiles can be used to decrease compile times.
-# You can either specify "disabled_classes", OR
-# explicitly specify "enabled_classes" which disables all other classes.
-# Modify the example file as needed and uncomment the line below or
-# manually specify the build_profile parameter when running SCons.
-
-# localEnv["build_profile"] = "build_profile.json"
-
 customs = ["custom.py"]
 customs = [os.path.abspath(path) for path in customs]
 
 opts = Variables(customs, ARGUMENTS)
-opts.Add(EnumVariable('float_precision', 'Floating point precision (single or double)', 'single', 
+# 使用godot-cpp兼容的参数名
+opts.Add(EnumVariable('precision', 'Floating point precision (single or double)', 'single', 
                       allowed_values=('single', 'double')))
 opts.Update(localEnv)
 
@@ -39,20 +31,19 @@ Run the following command to download godot-cpp:
     git submodule update --init --recursive""")
     sys.exit(1)
 
+# 确保precision参数传递给godot-cpp
 env = SConscript("godot-cpp/SConstruct", {"env": env, "customs": customs})
 
-# 添加浮点精度配置
-float_precision = env['float_precision']
-if float_precision == 'double':
-    env.Append(CPPDEFINES=['DOUBLE_PRECISION=1'])
+# 移除自定义的精度宏定义，使用godot-cpp的标准配置
+precision = env['precision']
+if precision == 'double':
     print("Building with DOUBLE precision")
 else:
-    env.Append(CPPDEFINES=['SINGLE_PRECISION=1'])
     print("Building with SINGLE precision")
 
 # 添加构建类型配置
-if env["target"] == "release":
-    env.Append(CCFLAGS=['-O3'])
+if env["target"] == "template_release":
+    env.Append(CCFLAGS=['-O2'])
     print("Building RELEASE version")
 else:
     env.Append(CCFLAGS=['-g'])
@@ -68,13 +59,8 @@ if env["target"] in ["editor", "template_debug"]:
     except AttributeError:
         print("Not including class reference as we're targeting a pre-4.3 baseline.")
 
-# .dev doesn't inhibit compatibility, so we don't need to key it.
-# .universal just means "compatible with all relevant arches" so we don't need to key it.
+# 使用godot-cpp的标准suffix，它已经包含了精度信息
 suffix = env['suffix'].replace(".dev", "").replace(".universal", "")
-
-# 添加精度标识到文件名
-if float_precision == 'double':
-    suffix += ".double"
 
 lib_filename = "{}{}{}{}".format(env.subst('$SHLIBPREFIX'), libname, suffix, env.subst('$SHLIBSUFFIX'))
 

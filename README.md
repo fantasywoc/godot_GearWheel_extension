@@ -1,48 +1,77 @@
 # godot-cpp template
 This repository serves as a quickstart template for GDExtension development with Godot 4.0+.
 
-## Contents
-* An empty Godot project (`demo/`)
-* godot-cpp as a submodule (`godot-cpp/`)
-* GitHub Issues template (`.github/ISSUE_TEMPLATE.yml`)
-* GitHub CI/CD workflows to publish your library packages when creating a release (`.github/workflows/builds.yml`)
-* preconfigured source files for C++ development of the GDExtension (`src/`)
-* setup to automatically generate `.xml` files in a `doc_classes/` directory to be parsed by Godot as [GDExtension built-in documentation](https://docs.godotengine.org/en/stable/tutorials/scripting/gdextension/gdextension_docs_system.html)
+# godot-cpp-extension
+godot C++ 扩展
+# 编译
 
-## Usage - Template
-
-To use this template, log in to GitHub and click the green "Use this template" button at the top of the repository page.
-This will let you create a copy of this repository with a clean git history. Make sure you clone the correct branch as these are configured for development of their respective Godot development branches and differ from each other. Refer to the docs to see what changed between the versions.
-
-For getting started after cloning your own copy to your local machine, you should: 
-* initialize the godot-cpp git submodule via `git submodule update --init`
-* change the name of your library
-  * change the name of the compiled library file inside the `SConstruct` file by modifying the `libname` string.
-  * change the pathnames of the to be loaded library name inside the `demo/bin/example.gdextension` file. By replacing `libgdexample` to the name specified in your `SConstruct` file.
-  * change the name of the `demo/bin/example.gdextension` file
-* change the `entry_symbol` string inside your `demo/bin/your-extension.gdextension` file to be configured for your GDExtension name. This should be the same as the `GDExtensionBool GDE_EXPORT` external C function. As the name suggests, this sets the entry function for your GDExtension to be loaded by the Godot editors C API.
-* register the classes you want Godot to interact with inside the `register_types.cpp` file in the initialization method (here `initialize_gdextension_types`) in the syntax `GDREGISTER_CLASS(CLASS-NAME);`.
-
-### Configuring an IDE 
-You can develop your own extension with any text editor and by invoking scons on the command line, but if you want to work with an IDE (Integrated Development Environment), you can use a compilation database file called `compile_commands.json`. Most IDEs should automatically identify this file, and self-configure appropriately.
-To generate the database file, you can run one of the following commands in the project root directory:
-```shell
-# Generate compile_commands.json while compiling
-scons compiledb=yes
-
-# Generate compile_commands.json without compiling
-scons compiledb=yes compile_commands.json
+```bash
+#清理缓存
+scons -c
+#编译（默认编译debug single）
+scons
 ```
+### release版本
+```scons target=template_release precision=single```
+```scons target=template_release precision=double```
 
-## Usage - Actions
-
-This repository comes with a GitHub action that builds the GDExtension for cross-platform use. It triggers automatically for each pushed change. You can find and edit it in [builds.yml](.github/workflows/builds.yml).
-After a workflow run is complete, you can find the file `godot-cpp-template.zip` on the `Actions` tab on GitHub.
-
+### debug版本
+```scons target=template_debug precision=single```
+```scons target=template_debug precision=double```
 
 
 
-# `.gdextension` 文件的生成与作用
+## 构建扩展代码
+ 1. 将src/example_class.cpp 和 src/example_class.h 替换为你的代码，并进行函数绑定```_bind_methods()```
+ 2. 修改注册代码src/register_types.cpp -> ```GDREGISTER_CLASS(ExampleClass)```匹配你的类名  	
+
+## 修改库文件名配置
+ 假设你的库文件名为  ```Your-lib-Name```
+1. /CMakeLists.txt 
+   ```set(LIBNAME "EXTENSION-NAMET" CACHE STRING "The name of the library")```
+   将```EXTENSION-NAMET```修改为```Your-lib-Name```
+2. ./EXTENSION-VERLET
+   ```libname = "EXTENSION-NAMET" ```
+   将```EXTENSION-NAMET```修改为```Your-lib-Name```
+
+
+
+
+## `example.gdextension` 文件配置
+   匹配你编译的库文件版本，例如windows编译。
+   ```windows.x86_64.single.debug = "./windows/EXTENSION-NAME.windows.template_debug.x86_64.dll"```
+   将 ```EXTENSION-NAME.windows.template_debug.x86_64.dll``` 替换为 ```Your-lib-Name.windows.template_debug.x86_64.dll```
+
+# 扩展的使用方法
+
+将编译好的文件放到godot项目对应的bin/目录下
+```
+   ./bin
+      ├─android
+      ├─linux
+      ├─macos
+      ├─windows
+      └─example.gdextension
+```
+启动demo(你的项目)即可使用函数
+```	
+   var example := ExampleClass.new()
+	example.print_type(example)
+```
+## 扩展使用注意
+单精度库需要单精度godot编辑器
+
+### Debug版本 (template_debug)
+- 开发阶段 ：在Godot编辑器中运行项目时
+- 调试模式 ：使用"Play"按钮运行项目时
+- 特点 ：包含调试信息，性能较慢，但便于调试
+### Release版本 (template_release)
+- 最终发布 ：当你导出/打包项目为最终产品时
+- 生产环境 ：分发给最终用户的版本
+- 特点 ：优化编译，性能更好，体积更小
+
+
+
 
 `.gdextension` 文件是 Godot 4 引入的**手动创建的配置文件**，用于替代 Godot 3 的 `.gdnlib` 文件。
 
@@ -138,21 +167,5 @@ GDE_EXPORT GDExtensionBool GDE_EXPORT gdextension_library_init(
 3. 通过 `entry_symbol` 查找并调用初始化函数
 4. 注册扩展中定义的类和方法
 
-> **重要提示**：`.gdextension` 文件是纯文本配置文件，不需要特殊工具生成，但必须确保其内容与你的代码和编译输出精确匹配。
 
 
-
-# Godot Extension 编译
-
-## 编译步骤
-
-scons compiledb=yes # 生成编译数据库文件  
-
-scons # 编译
-scons -c # 清理
-
-# 单精度调试版
-scons target=template_debug float_precision=single
-
-# 双精度发布版
-scons target=template_release float_precision=double

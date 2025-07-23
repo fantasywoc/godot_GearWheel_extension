@@ -4,8 +4,10 @@ cmake_minimum_required(VERSION 3.17)
 # Silence unused variable warning when specified from toolchain
 if(CMAKE_C_COMPILER)
 endif()
-# 库文件名字
-set(LIBNAME "EXTENSION-VERLET" CACHE STRING "The name of the library")
+# 库文件名配置  ↓↓↓
+set(LIBNAME "EXTENSION-NAME" CACHE STRING "The name of the library")
+
+
 set(GODOT_PROJECT_DIR "demo" CACHE STRING "The directory of a Godot project folder")
 
 # Make sure all the dependencies are satisfied
