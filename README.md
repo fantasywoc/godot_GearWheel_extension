@@ -1,8 +1,6 @@
-# godot-cpp template
-This repository serves as a quickstart template for GDExtension development with Godot 4.0+.
 
 # godot-cpp-extension
-godot C++ 扩展
+godot C++ 扩展例子
 # 编译
 
 ```bash
@@ -12,12 +10,17 @@ scons -c
 scons
 ```
 ### release版本
-```scons target=template_release precision=single```
-```scons target=template_release precision=double```
+```bash
+scons target=template_release precision=single
+scons target=template_release precision=double
+
+```
 
 ### debug版本
-```scons target=template_debug precision=single```
-```scons target=template_debug precision=double```
+```bash
+scons target=template_debug precision=single
+scons target=template_debug precision=double
+```
 
 
 
@@ -29,9 +32,11 @@ scons
  假设你的库文件名为  ```Your-lib-Name```
 1. /CMakeLists.txt 
    ```set(LIBNAME "EXTENSION-NAMET" CACHE STRING "The name of the library")```
+   
    将```EXTENSION-NAMET```修改为```Your-lib-Name```
-2. ./EXTENSION-VERLET
+3. ./EXTENSION-VERLET
    ```libname = "EXTENSION-NAMET" ```
+   
    将```EXTENSION-NAMET```修改为```Your-lib-Name```
 
 
@@ -54,9 +59,9 @@ scons
       └─example.gdextension
 ```
 启动demo(你的项目)即可使用函数
-```	
+```gdscript	
    var example := ExampleClass.new()
-	example.print_type(example)
+   example.print_type(example)
 ```
 ## 扩展使用注意
 单精度库需要单精度godot编辑器
