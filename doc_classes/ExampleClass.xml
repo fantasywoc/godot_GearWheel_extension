@@ -1,19 +1,35 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="ExampleClass" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
-		Example class.
+		Verlet绳索系统的示例类。
 	</brief_description>
 	<description>
-		An example class.
+		一个用于演示的示例类。提供了类型检测和坐标点处理的基础功能。
+		这个类继承自RefCounted，可以安全地在Godot项目中使用。
 	</description>
 	<tutorials>
+		<link title="Verlet Integration Tutorial">https://en.wikipedia.org/wiki/Verlet_integration</link>
 	</tutorials>
 	<methods>
 		<method name="print_type" qualifiers="const">
 			<return type="void" />
 			<param index="0" name="variant" type="Variant" />
 			<description>
-				Print the type of the variant.
+				打印传入变量的类型信息。
+				这个方法会在控制台输出"VerletRopeType: [类型ID]"的格式信息，用于调试和类型检查。
+				[param variant] 要检查类型的变量，可以是任何Godot支持的Variant类型。
+			</description>
+		</method>
+		<method name="double_points" qualifiers="const">
+			<return type="Array" />
+			<param index="0" name="points" type="Array" />
+			<description>
+				将输入的Vector2坐标点数组中每个点的坐标值翻倍。
+				这个方法遍历输入数组，对每个Vector2类型的元素进行坐标翻倍处理（x*2, y*2），
+				并返回包含处理后坐标的新数组。如果数组中包含非Vector2类型的元素，会跳过并输出错误信息。
+				[param points] 包含Vector2坐标点的数组。
+				[b]返回值：[/b] 包含翻倍后坐标点的新Array。
+				[b]注意：[/b] 输入数组中的非Vector2元素会被跳过，并在控制台输出警告信息。
 			</description>
 		</method>
 	</methods>
