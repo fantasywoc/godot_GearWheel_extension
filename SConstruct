@@ -4,8 +4,10 @@ import sys
 
 from methods import print_error
 
-
+# 库文件名
 libname = "EXTENSION-VERLET"
+# libname = "EXTENSION-NAME"
+# 项目路径
 projectdir = "demo"
 
 localEnv = Environment(tools=["default"], PLATFORM="")
@@ -41,8 +43,8 @@ env.Append(CPPPATH=["src/"])
 sources = Glob("src/*.cpp")
 
 
-if env["target"] == "template_release":
-    env.Append(CCFLAGS=["-O3", "-DNDEBUG"])  # 禁用调试断言
+# if env["target"] == "template_release":
+#     env.Append(CCFLAGS=["-O3", "-DNDEBUG"])  # 禁用调试断言
 
 if env["target"] in ["editor", "template_debug"]:
     try:

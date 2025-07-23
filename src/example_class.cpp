@@ -3,7 +3,7 @@
 void ExampleClass::_bind_methods() {
 	godot::ClassDB::bind_method(D_METHOD("print_type", "variant"), &ExampleClass::print_type);
 	    // 绑定新增函数：参数名为 points
-    ClassDB::bind_method(D_METHOD("double_points", "points"), &ExampleClass::double_points);
+    godot::ClassDB::bind_method(D_METHOD("double_points", "points"), &ExampleClass::double_points);
 }
 
 void ExampleClass::print_type(const Variant &p_variant) const {
