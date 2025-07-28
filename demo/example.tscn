@@ -1,6 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://dh0oj81pufivs"]
+[gd_scene load_steps=3 format=3 uid="uid://dh0oj81pufivs"]
 
 [ext_resource type="Script" uid="uid://d4jtykcwlwdbx" path="res://example.gd" id="1_2jas5"]
+[ext_resource type="Texture2D" uid="uid://dkk121i1mavmo" path="res://绘制机械齿轮 (7).png" id="2_n51mc"]
 
 [node name="Node" type="Node"]
 script = ExtResource("1_2jas5")
+
+[node name="RotatableRigidBody" type="RotatableRigidBody" parent="."]
+rotation_speed = 6.1
+clockwise = true
+auto_rotate = false
+rotation = 174.007
+
+[node name="Sprite2D" type="Sprite2D" parent="RotatableRigidBody"]
+texture = ExtResource("2_n51mc")

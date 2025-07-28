@@ -5,9 +5,10 @@ import sys
 from methods import print_error
 
 # 库文件名
-libname = "EXTENSION-NAME"
+# libname = "EXTENSION-NAME"
+libname = "RotatableRigidBody"
 # 项目路径
-projectdir = "demo"
+projectdir = "demo/addons/rigid_body"
 
 localEnv = Environment(tools=["default"], PLATFORM="")
 

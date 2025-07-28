@@ -1,32 +1,37 @@
 #include "editor_plugin.h"
-#include "example_class.h" // 包含自定义类
+#include "rotatable_rigid_body.h"
+#include <godot_cpp/core/class_db.hpp>
+#include <godot_cpp/classes/editor_interface.hpp>
 
-ExampleClassEditorPlugin::ExampleClassEditorPlugin() {}
-ExampleClassEditorPlugin::~ExampleClassEditorPlugin() {}
+using namespace godot;
 
-void ExampleClassEditorPlugin::_enter_tree() {
-// 若 ExampleClass 是节点（需显示在场景中），应继承 Node 或其派生类（如 Node2D），再用 add_custom_type 注册。
-// 若 ExampleClass 是数据资源（如配置数据、工具类），继承 RefCounted 即可，注册后可在 Inspector 面板中通过 “新建资源” 选择它。
-    // 注册资源类（编辑器会在资源选择器中识别它）
-    ClassDB::register_class<ExampleClass>();
-    // 可选：添加自定义节点到“创建”菜单的快捷方式
-    // 第一个参数：菜单路径（如 "Node2D/GearWheel"）
-    // 第二个参数：类名
-    // 第三个参数：图标路径
-    // add_custom_type(
-    //     "ExampleClass",
-    //     "RigidBody2D",
-    //     &ExampleClass::get_class_static(),
-    //     "res://addons/icons/icon.svg"
-    // );
+// RotatableInspectorPlugin 实现
 
-     UtilityFunctions::print("ExampleClass Editor Plugin activated");
+
+bool RotatableInspectorPlugin::_can_handle(Object *p_object) const {
+    return Object::cast_to<RotatableRigidBody>(p_object) != nullptr;
 }
 
-void ExampleClassEditorPlugin::_exit_tree() {
-    // 移除自定义类型
-    // remove_custom_type("ExampleClass");   // 无需移除资源类注册
+void RotatableInspectorPlugin::_parse_category(Object *p_object, const String &p_category) {
+    // 可以在这里添加自定义检查器逻辑
+}
 
-        // 清理编辑器插件相关资源
-    UtilityFunctions::print("ExampleClass Editor Plugin deactivated");
+// void RotatableInspectorPlugin::_bind_methods() {
+
+//     // 空实现
+// }
+
+RotatableEditorPlugin::RotatableEditorPlugin() {
+    inspector_plugin.instantiate();
+}
+
+RotatableEditorPlugin::~RotatableEditorPlugin() {
+}
+
+void RotatableEditorPlugin::_enter_tree() {
+    add_inspector_plugin(inspector_plugin);
+}
+
+void RotatableEditorPlugin::_exit_tree() {
+    remove_inspector_plugin(inspector_plugin);
 }
