@@ -1,6 +1,9 @@
 # Using the same minimum as the godot-cpp project
 cmake_minimum_required(VERSION 3.17)
 
+# 生成 compile_commands.json
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Silence unused variable warning when specified from toolchain
 if(CMAKE_C_COMPILER)
 endif()

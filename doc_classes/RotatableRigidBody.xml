@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="RotatableRigidBody" inherits="RigidBody2D" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		可自动旋转的2D刚体节点。
+	</brief_description>
+	<description>
+		RotatableRigidBody 是一个继承自 RigidBody2D 的自定义节点，提供了自动旋转功能。
+		它可以通过施加扭矩来实现物理真实的旋转效果，支持设置旋转速度、方向和自动旋转开关。
+		该类特别适用于齿轮、轮子等需要持续旋转的机械部件。
+	</description>
+	<tutorials>
+		<link title="RigidBody2D Documentation">https://docs.godotengine.org/en/stable/classes/class_rigidbody2d.html</link>
+	</tutorials>
+	<methods>
+		<method name="rotate_body">
+			<return type="void" />
+			<param index="0" name="delta" type="float" />
+			<description>
+				手动执行旋转操作。
+				根据当前的旋转速度和方向设置，对刚体施加相应的扭矩。扭矩大小由旋转速度的平方乘以扭矩系数计算得出。
+				[param delta] 物理帧的时间间隔，通常由 _physics_process 传入。
+				[b]注意：[/b] 如果启用了自动旋转，此方法会在每个物理帧自动调用。
+			</description>
+		</method>
+		<method name="set_rotation_speed">
+			<return type="void" />
+			<param index="0" name="speed" type="float" />
+			<description>
+				设置旋转速度。
+				[param speed] 旋转速度值，范围为 0-100，值越大旋转越快。
+			</description>
+		</method>
+		<method name="get_rotation_speed" qualifiers="const">
+			<return type="float" />
+			<description>
+				获取当前的旋转速度。
+				[b]返回值：[/b] 当前设置的旋转速度值。
+			</description>
+		</method>
+		<method name="set_clockwise">
+			<return type="void" />
+			<param index="0" name="clockwise" type="bool" />
+			<description>
+				设置旋转方向。
+				[param clockwise] 如果为 true，则顺时针旋转；如果为 false，则逆时针旋转。
+			</description>
+		</method>
+		<method name="get_clockwise" qualifiers="const">
+			<return type="bool" />
+			<description>
+				获取当前的旋转方向。
+				[b]返回值：[/b] true 表示顺时针，false 表示逆时针。
+			</description>
+		</method>
+		<method name="set_auto_rotate">
+			<return type="void" />
+			<param index="0" name="auto" type="bool" />
+			<description>
+				设置是否启用自动旋转。
+				[param auto] 如果为 true，刚体将在每个物理帧自动旋转；如果为 false，需要手动调用 rotate_body 方法。
+			</description>
+		</method>
+		<method name="get_auto_rotate" qualifiers="const">
+			<return type="bool" />
+			<description>
+				获取自动旋转的启用状态。
+				[b]返回值：[/b] true 表示已启用自动旋转，false 表示已禁用。
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="rotation_speed" type="float" setter="set_rotation_speed" getter="get_rotation_speed" default="1.0">
+			旋转速度，范围为 0-100。值越大，旋转越快。实际的扭矩大小由速度的平方计算得出。
+		</member>
+		<member name="clockwise" type="bool" setter="set_clockwise" getter="get_clockwise" default="false">
+			旋转方向。true 为顺时针，false 为逆时针。
+		</member>
+		<member name="auto_rotate" type="bool" setter="set_auto_rotate" getter="get_auto_rotate" default="true">
+			是否启用自动旋转。启用后，刚体将在每个物理帧自动执行旋转。
+		</member>
+	</members>
+</class>

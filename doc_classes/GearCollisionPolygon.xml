@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="GearCollisionPolygon" inherits="CollisionPolygon2D" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		自动生成齿轮形状的碰撞多边形。
+	</brief_description>
+	<description>
+		GearCollisionPolygon 是一个继承自 CollisionPolygon2D 的自定义节点，专门用于生成齿轮形状的碰撞多边形。
+		它可以根据设置的参数（如齿数、齿宽、齿高、半径等）自动计算并生成精确的齿轮轮廓，
+		为齿轮机械系统提供准确的物理碰撞检测。
+	</description>
+	<tutorials>
+		<link title="CollisionPolygon2D Documentation">https://docs.godotengine.org/en/stable/classes/class_collisionpolygon2d.html</link>
+	</tutorials>
+	<methods>
+		<method name="set_teeth_count">
+			<return type="void" />
+			<param index="0" name="count" type="int" />
+			<description>
+				设置齿轮的齿数。
+				[param count] 齿轮的齿数，必须为正整数。
+			</description>
+		</method>
+		<method name="get_teeth_count" qualifiers="const">
+			<return type="int" />
+			<description>
+				获取齿轮的齿数。
+				[b]返回值：[/b] 当前设置的齿数。
+			</description>
+		</method>
+		<method name="set_tooth_width_angle">
+			<return type="void" />
+			<param index="0" name="angle" type="float" />
+			<description>
+				设置齿宽角度。
+				[param angle] 单个齿的角度宽度，以度为单位。
+			</description>
+		</method>
+		<method name="get_tooth_width_angle" qualifiers="const">
+			<return type="float" />
+			<description>
+				获取齿宽角度。
+				[b]返回值：[/b] 当前设置的齿宽角度。
+			</description>
+		</method>
+		<method name="set_is_driving">
+			<return type="void" />
+			<param index="0" name="driving" type="bool" />
+			<description>
+				设置是否为主动齿轮。
+				[param driving] 如果为 true，表示这是主动齿轮；如果为 false，表示这是从动齿轮。
+			</description>
+		</method>
+		<method name="get_is_driving" qualifiers="const">
+			<return type="bool" />
+			<description>
+				获取是否为主动齿轮。
+				[b]返回值：[/b] true 表示主动齿轮，false 表示从动齿轮。
+			</description>
+		</method>
+		<method name="set_up_tooth_width">
+			<return type="void" />
+			<param index="0" name="width" type="float" />
+			<description>
+				设置齿顶宽度。
+				[param width] 齿顶部分的宽度值。
+			</description>
+		</method>
+		<method name="get_up_tooth_width" qualifiers="const">
+			<return type="float" />
+			<description>
+				获取齿顶宽度。
+				[b]返回值：[/b] 当前设置的齿顶宽度。
+			</description>
+		</method>
+		<method name="set_down_tooth_width">
+			<return type="void" />
+			<param index="0" name="width" type="float" />
+			<description>
+				设置齿根宽度。
+				[param width] 齿根部分的宽度值。
+			</description>
+		</method>
+		<method name="get_down_tooth_width" qualifiers="const">
+			<return type="float" />
+			<description>
+				获取齿根宽度。
+				[b]返回值：[/b] 当前设置的齿根宽度。
+			</description>
+		</method>
+		<method name="set_tooth_height">
+			<return type="void" />
+			<param index="0" name="height" type="float" />
+			<description>
+				设置齿高。
+				[param height] 从齿根到齿顶的高度值。
+			</description>
+		</method>
+		<method name="get_tooth_height" qualifiers="const">
+			<return type="float" />
+			<description>
+				获取齿高。
+				[b]返回值：[/b] 当前设置的齿高。
+			</description>
+		</method>
+		<method name="set_radius">
+			<return type="void" />
+			<param index="0" name="m_radius" type="float" />
+			<description>
+				设置齿轮半径。
+				设置半径时会自动调用 GearWheelCalculator 来验证齿轮参数的有效性，
+				确保齿数和齿宽能够整除360度，以生成完整的齿轮形状。
+				[param m_radius] 齿轮的基础半径值。
+			</description>
+		</method>
+		<method name="get_radius" qualifiers="const">
+			<return type="float" />
+			<description>
+				获取齿轮半径。
+				[b]返回值：[/b] 当前设置的齿轮半径。
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="teeth_count" type="int" setter="set_teeth_count" getter="get_teeth_count" default="20">
+			齿轮的齿数。决定了齿轮周围齿的数量。
+		</member>
+		<member name="tooth_width_angle" type="float" setter="set_tooth_width_angle" getter="get_tooth_width_angle" default="1.0">
+			单个齿的角度宽度，以度为单位。影响齿的密度和形状。
+		</member>
+		<member name="is_driving" type="bool" setter="set_is_driving" getter="get_is_driving" default="false">
+			是否为主动齿轮。主动齿轮通常用于驱动其他齿轮。
+		</member>
+		<member name="up_tooth_width" type="float" setter="set_up_tooth_width" getter="get_up_tooth_width" default="10.0">
+			齿顶宽度。影响齿轮啮合时的接触面积。
+		</member>
+		<member name="down_tooth_width" type="float" setter="set_down_tooth_width" getter="get_down_tooth_width" default="15.0">
+			齿根宽度。影响齿轮的强度和啮合特性。[两个齿轮啮合:齿的参数要一致]
+		</member>
+		<member name="tooth_height" type="float" setter="set_tooth_height" getter="get_tooth_height" default="18.0">
+			齿高。从齿根到齿顶的距离，影响齿轮的啮合深度。
+		</member>
+		<member name="radius" type="float" setter="set_radius" getter="get_radius" default="50.0">
+			齿轮的基础半径。决定了齿轮的整体大小。
+		</member>
+	</members>
+</class>

@@ -1,19 +1,24 @@
 #include <iostream>
 #include <cmath>
 #include <limits>
-#include <vector>
 
+#include <godot_cpp/variant/utility_functions.hpp>
 
-class GearWheel{
+#ifndef M_PI
+#define M_PI 3.14
+#endif
+
+class GearWheelCalculator{
 private:
-    double radius;    // 圆半径
-    double chord;     // 弦长
-    double angle;     // 弦对应的圆心角（角度制）
-
-
+    float radius;    // 圆半径
+    float chord;     // 弦长
+    float angle;     // 弦对应的圆心角（角度制）
+    float height;
+    int tooth_count;
+    float Error = 0.05;
 public:
     // 构造函数：初始化半径和弦长
-    GearWheel(double r, double c) : radius(r), chord(c) {
+    GearWheelCalculator(float r, float c) : radius(r), chord(c) {
         validateInput();
         calculateAngle();
     }
@@ -30,44 +35,49 @@ public:
 
     // 计算弦对应的圆心角（核心公式）
     void calculateAngle() {
-        double halfChord = chord / 2;
-        double sinValue = halfChord / radius;
+        float halfChord = chord / 2;
+        float sinValue = halfChord / radius;
         angle = 2 * asin(sinValue) * 180.0 / M_PI; // 弧度转角度[2](@ref)
     }
 
-    // 判断角度是否可整除360°（误差±0.01°）
+    // 判断角度是否可整除360°（误差±0.1°）
     bool isDivisibleBy360(int& count) const {
-        double ratio = 360.0 / angle;
-        double fractionalPart = ratio - std::floor(ratio);
-        if (std::abs(fractionalPart) < 0.01 || std::abs(1 - fractionalPart) < 0.01){
-            if(std::abs(fractionalPart) < 0.01){ count = int(ratio); }
-            if(std::abs(1 - fractionalPart) < 0.01){ count = int(ratio)+1; }
+        float Error = 0.05;
+        float ratio = 360.0 / angle * 0.5;
+        float fractionalPart = ratio - std::floor(ratio);
+        if (std::abs(fractionalPart) < Error || std::abs(1 - fractionalPart) < Error){
+            if(std::abs(fractionalPart) < Error){ count = int(ratio); }
+            if(std::abs(1 - fractionalPart) < Error){ count = int(ratio)+1; }
             return true;
         }
         return false;
     }
 
  // 寻找最近的可整除半径（双向搜索）
-    double findNearestValidRadius(double step = 0.01) {
-        double originalRadius = radius;
-        double upRadius = radius;   // 向上搜索的半径
-        double downRadius = radius; // 向下搜索的半径
+    float findNearestValidRadius(float step = 0.01) {
+        float originalRadius = radius;
+        float upRadius = radius;   // 向上搜索的半径
+        float downRadius = radius; // 向下搜索的半径
         bool found_up = false;
         bool found_down = false;
-        double valid_up = -1.0;
-        double valid_down = -1.0;
+        float valid_up = -1.0;
+        float valid_down = -1.0;
+        int up_count = 0;
+        int down_count =0;
 
         // 双向搜索直到找到有效解
         for (int i = 0; i < 100000; ++i) { // 防无限循环
             // 向上搜索
             if (!found_up) {
                 try {
-                    GearWheel upCalc(upRadius, chord);
+                    GearWheelCalculator upCalc(upRadius, chord);
                     int count=0;
                     if (upCalc.isDivisibleBy360(count)) {
                         valid_up = upRadius;
                         found_up = true;
-                        std::cout << "------------------->   upRadius:" << upRadius <<"  count:" << count <<std::endl;
+                        up_count = count;
+                        // print_line(vformat("Found valid radii: up=%.3f, down=%.3f", upRadius, downRadius));
+                        godot::UtilityFunctions::print("--------------->   upRadius:" , upRadius ,"  count:" , up_count );
                     }
                 } catch (...) {
                     // 忽略无效半径
@@ -77,12 +87,16 @@ public:
             // 向下搜索
             if (!found_down && downRadius > chord / 2) {
                 try {
-                    GearWheel downCalc(downRadius, chord);
+                    GearWheelCalculator downCalc(downRadius, chord);
+
                     int count=0;
                     if (downCalc.isDivisibleBy360(count)) {
                         valid_down = downRadius;
                         found_down = true;
-                        std::cout <<"------------------->   downRadius:" << downRadius <<"  count:" << count  << std::endl;
+                        down_count = count;
+                        // print_line(vformat("Found valid radii: up=%.3f, down=%.3f", upRadius, downRadius));
+                        godot::UtilityFunctions::print("--------------->   downRadius:" , downRadius ,"  count:" , down_count );
+                        // std::cout <<"------------------->   downRadius:" << downRadius <<"  count:" << count  << std::endl;
                     }
                 } catch (...) {
                     // 忽略无效半径
@@ -99,11 +113,15 @@ public:
             upRadius += step;
             downRadius -= step;
         }
+        // godot::UtilityFunctions::print("---> upRadius:", upRadius, "   downRadius:", downRadius," angle:",angle," tooth_count:",up_count," down_count:",down_count);
         if (valid_up < 0 || valid_down < 0){
-            if(valid_up > 0){return valid_up;}
-            if(valid_down < 0){return valid_down;}
+            // if(valid_up > 0){tooth_count = up_count; return valid_up;}
+            // if(valid_down < 0){tooth_count = down_count;return valid_down;}
             return -1;
         }
+        tooth_count = (valid_down-originalRadius) < (upRadius -originalRadius) ? up_count : down_count;
+        godot::UtilityFunctions::print("---> upRadius:", upRadius, "   downRadius:", downRadius," angle:",angle," tooth_count:",tooth_count);
+
         // std::cout << "upRadius:" << upRadius << "   downRadius:" << downRadius << std::endl;
         return (valid_down-originalRadius) < (upRadius -originalRadius) ? valid_down : upRadius;
     
@@ -118,18 +136,20 @@ public:
     }
 
     // Getter方法
-    double getAngle() const { return angle; }
-    double getRadius() const { return radius; }
+    float getAngle() const { return angle; }
+    float getRadius() const { return radius; }
+    float getTeethCount() const { return tooth_count; }
 };
+
 
 // // 示例用法
 // int main() {
 //     try {
-//         GearWheel gear(100.0, 50.6); // 120°圆心角
+//         GearWheel gear(100.0, 20); // 120°圆心角
 //         gear.printResult();
 //         int count=0;
 //         if (!gear.isDivisibleBy360(count)) {
-//             double newRadius = gear.findNearestValidRadius();
+//             float newRadius = gear.findNearestValidRadius();
 //             std::cout << "最近有效半径: " << newRadius << "\n";
 //             gear.printResult();
 //         }
