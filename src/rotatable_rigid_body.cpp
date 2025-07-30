@@ -5,8 +5,7 @@
 using namespace godot;
 
 RotatableRigidBody::RotatableRigidBody() {
-    // 简化构造函数，移除有问题的物理材质设置
-    // 可以在Godot编辑器中手动设置物理属性
+    // UtilityFunctions::print("The RotatableRigidBody plugin has been installed correctly.");
 }
 
 void RotatableRigidBody::_bind_methods() {
