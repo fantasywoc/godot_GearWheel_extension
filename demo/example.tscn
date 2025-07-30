@@ -10,3 +10,7 @@ script = ExtResource("1_2jas5")
 position = Vector2(418, 278)
 GearScale = 0.65
 RotationSpeed = 1.64
+
+[node name="RotatableRigidBody" type="RotatableRigidBody" parent="."]
+
+[node name="GearCollisionPolygon" type="GearCollisionPolygon" parent="RotatableRigidBody"]

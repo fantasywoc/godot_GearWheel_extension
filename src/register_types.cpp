@@ -3,6 +3,7 @@
 #include <godot_cpp/godot.hpp>
 
 #include "rotatable_rigid_body.h"
+#include "gear_collision_polygon.h"
 #include "editor_plugin.h"
 
 using namespace godot;
@@ -14,6 +15,8 @@ void initialize_rotatable_module(ModuleInitializationLevel p_level) {
     }
     if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
         ClassDB::register_class<RotatableRigidBody>();
+        ClassDB::register_class<GearCollisionPolygon>();  // 注册新类
+        // 可以继续添加更多类
     }
 }
 

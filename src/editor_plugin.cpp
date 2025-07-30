@@ -16,10 +16,7 @@ void RotatableInspectorPlugin::_parse_category(Object *p_object, const String &p
     // 可以在这里添加自定义检查器逻辑
 }
 
-// void RotatableInspectorPlugin::_bind_methods() {
 
-//     // 空实现
-// }
 
 RotatableEditorPlugin::RotatableEditorPlugin() {
     inspector_plugin.instantiate();
