@@ -16,6 +16,15 @@ run/main_scene="uid://dh0oj81pufivs"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
+[display]
+
+window/size/viewport_width=1660
+window/size/viewport_height=960
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/rigid_body/plugin.cfg")
+
+[rendering]
+
+environment/defaults/default_clear_color=Color(0.00820201, 0.00820203, 0.00820202, 1)

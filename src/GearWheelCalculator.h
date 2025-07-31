@@ -46,7 +46,7 @@ public:
         float ratio = 360.0 / (angle * 2.0);
         float fractionalPart = ratio - std::floor(ratio);
         if (std::abs(fractionalPart) < Error || std::abs(1 - fractionalPart) < Error){
-            if(std::abs(fractionalPart) < Error){ count = std::round(ratio); }
+            if(std::abs(fractionalPart) < Error){ count = std::floor(ratio); }
             if(std::abs(1 - fractionalPart) < Error){ count = std::ceil(ratio); }
             return true;
         }

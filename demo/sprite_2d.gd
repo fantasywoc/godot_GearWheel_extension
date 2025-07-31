@@ -1,86 +1,19 @@
-#extends Sprite2D
-#
-#@export var border_color: Color = Color(1, 0, 0)       # 边框颜色
-#@export var border_width: float = 5.0                 # 边框宽度
-#
-#var polygon_points: PackedVector2Array = []
-#var line_node: Line2D
-#var last_parent_transform: Transform2D = Transform2D.IDENTITY
-#
-#func _ready():
-	## 确保父节点是 CollisionPolygon2D
-	#if not get_parent() is CollisionPolygon2D:
-		#push_error("Parent node must be a CollisionPolygon2D")
-		#return
-	#
-	## 创建 Line2D 节点
-	#line_node = Line2D.new()
-	#line_node.width = border_width
-	#line_node.default_color = border_color
-	#line_node.closed = true
-	#add_child(line_node)
-	#
-	## 记录初始变换
-	#last_parent_transform = get_parent().transform
-	#
-	## 获取多边形点
-	#update_polygon()
-	#
-	## 监听多边形变化
-	#get_parent().connect("polygon_changed", Callable(self, "_on_polygon_changed"))
-#
-#func _process(_delta):
-	## 检查父节点变换是否变化
-	#if get_parent().transform != last_parent_transform:
-		#update_polygon()
-		#last_parent_transform = get_parent().transform
-#
-#func _on_polygon_changed():
-	#update_polygon()
-#
-#func update_polygon():
-	## 获取父节点的多边形点
-	#var parent = get_parent() as CollisionPolygon2D
-	#polygon_points = parent.polygon
-	#
-	## 如果没有点，使用默认矩形
-	#if polygon_points.size() == 0:
-		#polygon_points = PackedVector2Array([
-			#Vector2(-50, -50),
-			#Vector2(50, -50),
-			#Vector2(50, 50),
-			#Vector2(-50, 50)
-		#])
-	#
-	## 应用父节点变换
-	#var transformed_points = apply_parent_transform(polygon_points)
-	#
-	## 更新 Line2D 的点
-	#line_node.points = transformed_points
-#
-## 修复：正确应用父节点变换，将点转换到当前节点的坐标空间
-#func apply_parent_transform(points: PackedVector2Array) -> PackedVector2Array:
-	#var transformed_points = PackedVector2Array()
-	#var parent = get_parent()
-	#
-	#for point in points:
-		## 将点从父节点的本地坐标转换到当前节点的坐标空间
-		## 这会正确处理所有缩放、旋转和位置变换
-		#transformed_points.append(to_local(parent.to_global(point)))
-	#
-	#return transformed_points
 extends Sprite2D
 
-@export var border_color: Color = Color(1, 0, 0)       # 边框颜色
-@export var border_width: float = 5.0                 # 边框宽度
-@export var inner_color: Color = Color(0, 1, 0, 0.5)  # 内部线条颜色
+@export var border_color: Color = Color(1, 0, 0)       # 边框颜色（红色）
+@export var border_width: float = 4.0                 # 边框宽度
+@export var inner_color: Color = Color(0, 1, 0, 0.5)  # 内部线条颜色（半透明绿色）
 @export var inner_line_width: float = 3.0             # 内部线条宽度
 @export var inner_noise_scale: float = 0.1            # 内部线条紊乱程度
-@export var inner_point_count: int = 30               # 内部线条点数
+@export var inner_point_count: int = 150               # 内部线条点数
+@export var inner_border_scale: float = 0.5           # 内边框缩放比例 (0-1)
+@export var inner_border_color: Color = Color(0, 0, 1, 0.7) # 内边框颜色 (蓝色)
+@export var inner_border_width: float = 100.0            # 内边框宽度
 
 var polygon_points: PackedVector2Array = []
 var border_line: Line2D
 var inner_line: Line2D  # 用于内部紊乱线条
+var inner_border_line: Line2D  # 内边框线条
 var last_parent_transform: Transform2D = Transform2D.IDENTITY
 var random_points: PackedVector2Array = []
 
@@ -90,7 +23,7 @@ func _ready():
 		push_error("Parent node must be a CollisionPolygon2D")
 		return
 	
-	# 创建边框线条
+	# 创建外边框线条
 	border_line = Line2D.new()
 	border_line.width = border_width
 	border_line.default_color = border_color
@@ -103,6 +36,13 @@ func _ready():
 	inner_line.default_color = inner_color
 	inner_line.joint_mode = Line2D.LINE_JOINT_ROUND
 	add_child(inner_line)
+	
+	# 创建内边框线条
+	inner_border_line = Line2D.new()
+	inner_border_line.width = inner_border_width
+	inner_border_line.default_color = inner_border_color
+	inner_border_line.closed = true
+	add_child(inner_border_line)
 	
 	# 记录初始变换
 	last_parent_transform = get_parent().transform
@@ -147,8 +87,13 @@ func update_polygon():
 	# 应用父节点变换
 	var transformed_points = apply_parent_transform(polygon_points)
 	
-	# 更新边框线条的点
+	# 更新外边框线条的点
 	border_line.points = transformed_points
+	
+	# 生成内边框点并更新显示
+	var inner_border_points = generate_scaled_polygon(polygon_points, inner_border_scale)
+	var transformed_inner_border_points = apply_parent_transform(inner_border_points)
+	inner_border_line.points = transformed_inner_border_points
 	
 	# 重新生成内部随机点
 	generate_inner_random_points()
@@ -249,3 +194,26 @@ func apply_parent_transform(points: PackedVector2Array) -> PackedVector2Array:
 		transformed_points.append(to_local(parent.to_global(point)))
 	
 	return transformed_points
+
+# ========== 新增功能: 生成缩放多边形 ========== #
+func generate_scaled_polygon(original_points: PackedVector2Array, scale_factor: float) -> PackedVector2Array:
+	# 如果缩放比例为1，直接返回原始点
+	if abs(scale_factor - 1.0) < 0.001:
+		return original_points.duplicate()
+	
+	var scaled_points = PackedVector2Array()
+	var center = calculate_centroid(original_points)
+	
+	# 计算每个顶点相对于中心点的缩放
+	for point in original_points:
+		# 计算点到中心的向量
+		var vector_from_center = point - center
+		
+		# 缩放该向量
+		var scaled_vector = vector_from_center * scale_factor
+		
+		# 创建新点
+		var scaled_point = center + scaled_vector
+		scaled_points.append(scaled_point)
+	
+	return scaled_points

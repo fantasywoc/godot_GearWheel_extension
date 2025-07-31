@@ -5,7 +5,7 @@
 
 GearCollisionPolygon::GearCollisionPolygon() {
     // 构造函数
-
+    //  set_polygon(generate_gear_vertices());
 }
 
 void GearCollisionPolygon::_bind_methods() {
@@ -30,18 +30,18 @@ void GearCollisionPolygon::_bind_methods() {
 
     ClassDB::bind_method(D_METHOD("set_down_tooth_width", "width"), &GearCollisionPolygon::set_down_tooth_width);
     ClassDB::bind_method(D_METHOD("get_down_tooth_width"), &GearCollisionPolygon::get_down_tooth_width);
-    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "down_tooth_width", PROPERTY_HINT_RANGE, "0.1,100.0,0.001"), 
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "down_tooth_width", PROPERTY_HINT_RANGE, "1,100,0.001"), 
         "set_down_tooth_width", "get_down_tooth_width");
 
     ClassDB::bind_method(D_METHOD("set_tooth_height", "height"), &GearCollisionPolygon::set_tooth_height);
     ClassDB::bind_method(D_METHOD("get_tooth_height"), &GearCollisionPolygon::get_tooth_height);
-    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "tooth_height", PROPERTY_HINT_RANGE, "0.1,50.0,0.001"), 
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "tooth_height", PROPERTY_HINT_RANGE, "0.1,100.0,0.001"), 
         "set_tooth_height", "get_tooth_height");
 
 
     ClassDB::bind_method(D_METHOD("set_radius", "radius"), &GearCollisionPolygon::set_radius);
     ClassDB::bind_method(D_METHOD("get_radius"), &GearCollisionPolygon::get_radius);
-    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "radius", PROPERTY_HINT_RANGE, "0.1,100.0,0.001"), 
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "radius", PROPERTY_HINT_RANGE, "30,500.0,0.001"), 
         "set_radius", "get_radius");
 
 }
@@ -70,14 +70,14 @@ PackedVector2Array GearCollisionPolygon::generate_gear_vertices() {
     Vector2 base_points[point_count] = {            //godot x 轴 向右为正,Y轴向下为正
         Vector2(down_tooth_width / 2.0f, base_offset),         // 右翅根（
 
-        Vector2(down_tooth_width / 2.0f - (down_tooth_width-up_tooth_width) / (6.0f*2.0f), base_offset+tooth_height*0.3),        
-        Vector2(down_tooth_width / 2.0f - (down_tooth_width-up_tooth_width)/(3.0f*2.0f), base_offset+tooth_height*0.6),
+        Vector2(down_tooth_width / 2.0f - (down_tooth_width-up_tooth_width) / (8.0f*2.0f), base_offset+tooth_height*0.3),        
+        Vector2(down_tooth_width / 2.0f - (down_tooth_width-up_tooth_width)/(4.0f*2.0f), base_offset+tooth_height*0.65),
 
         Vector2(up_tooth_width / 2.0f, base_offset + tooth_height),   // 右齿顶
         Vector2(-up_tooth_width / 2.0f, base_offset + tooth_height),   // 左齿顶
        
-        Vector2(-down_tooth_width / 2.0f + (down_tooth_width-up_tooth_width)/(3.0f*2.0f), base_offset+tooth_height*0.6),
-        Vector2(-down_tooth_width / 2.0f + (down_tooth_width-up_tooth_width) / (6.0f*2.0f), base_offset+tooth_height*0.3), 
+        Vector2(-down_tooth_width / 2.0f + (down_tooth_width-up_tooth_width)/(4.0f*2.0f), base_offset+tooth_height*0.65),
+        Vector2(-down_tooth_width / 2.0f + (down_tooth_width-up_tooth_width) / (8.0f*2.0f), base_offset+tooth_height*0.3), 
 
         Vector2(-down_tooth_width / 2.0f, base_offset)          // 左翅根
         
