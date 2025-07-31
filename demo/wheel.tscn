@@ -9,7 +9,6 @@
 script = ExtResource("1_e0ure")
 GearScale = 1.07
 RotationSpeed = 7.81
-ClokWise = true
 AutoRoate = true
 
 [node name="RotatableRigidBody" type="RotatableRigidBody" parent="."]

@@ -1,24 +1,71 @@
-[gd_scene load_steps=3 format=3 uid="uid://dh0oj81pufivs"]
+[gd_scene load_steps=4 format=3 uid="uid://dh0oj81pufivs"]
 
 [ext_resource type="Script" uid="uid://d4jtykcwlwdbx" path="res://example.gd" id="1_2jas5"]
-[ext_resource type="PackedScene" uid="uid://c4nrd22ntrwfw" path="res://wheel.tscn" id="3_8lvy3"]
+[ext_resource type="Script" uid="uid://delbtkx2u8olr" path="res://sprite_2d.gd" id="4_wcwec"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_8lvy3"]
 
 [node name="Node" type="Node"]
 script = ExtResource("1_2jas5")
 
-[node name="W3" parent="." instance=ExtResource("3_8lvy3")]
-visible = false
-GearScale = 0.65
-RotationSpeed = 1.64
-
 [node name="RotatableRigidBody" type="RotatableRigidBody" parent="."]
+rotation_speed = 5.9
+position = Vector2(231, 258)
 
 [node name="GearCollisionPolygon" type="GearCollisionPolygon" parent="RotatableRigidBody"]
-teeth_count = 12
-tooth_width_angle = 38.8393
-is_driving = true
-up_tooth_width = 7.178
-down_tooth_width = 11.0
-tooth_height = 5.454
-radius = 38.8393
-polygon = PackedVector2Array(5.5, 37.5172, 3.589, 42.9712, -3.589, 42.9712, -5.5, 37.5172, -13.9861, 35.2446, -18.3671, 39.0135, -24.5844, 35.4262, -23.5139, 29.7471, -29.7284, 23.5375, -35.4066, 24.6126, -38.9989, 18.3981, -35.2334, 14.0142, -37.5128, 5.52987, -42.9683, 3.62321, -42.9741, -3.55479, -37.5216, -5.47013, -35.2557, -13.958, -39.0282, -18.336, -35.4458, -24.5562, -29.7658, -23.4902, -23.5612, -29.7096, -24.6408, -35.387, -18.4292, -38.9842, -14.0422, -35.2223, -5.55973, -37.5084, -3.65742, -42.9654, 3.52057, -42.9769, 5.44025, -37.5259, 13.93, -35.2668, 18.3049, -39.0427, 24.5279, -35.4653, 23.4665, -29.7845, 29.6909, -23.5848, 35.3674, -24.6689, 38.9696, -18.4602, 35.2111, -14.0703, 37.504, -5.58959, 42.9625, -3.69162, 42.9797, 3.48635, 37.5302, 5.41038, 35.2779, 13.9019, 39.0573, 18.2738, 35.4848, 24.4997, 29.8032, 23.4427, 23.6085, 29.6721, 24.6971, 35.3477, 18.4912, 38.9548, 14.0983, 35.1999)
+teeth_count = 14
+tooth_width_angle = 46.8805
+up_tooth_width = 6.127
+down_tooth_width = 11.255
+tooth_height = 7.73
+radius = 46.8805
+scale = Vector2(3, 3)
+polygon = PackedVector2Array(5.6275, 45.7063, 3.0635, 53.4363, -3.0635, 53.4363, -5.6275, 45.7063, -14.7511, 43.625, -20.4138, 49.4783, -25.9346, 46.8212, -24.8926, 38.7439, -32.211, 32.9118, -39.8519, 35.7303, -43.6742, 30.9417, -39.2324, 24.1155, -43.2974, 15.6866, -51.4047, 14.9125, -52.7722, 8.94003, -45.8094, 4.71547, -45.8168, -4.64251, -52.7863, -8.85597, -51.4284, -14.8306, -43.3224, -15.6176, -39.2707, -24.053, -43.7234, -30.8721, -39.9087, -35.6668, -32.2634, -32.8605, -24.9543, -38.7043, -26.0091, -46.7798, -20.4925, -49.4457, -14.8206, -43.6015, -5.70028, -45.6973, -3.1486, -53.4314, 2.9784, -53.4411, 5.5547, -45.7152, 14.6816, -43.6484, 20.335, -49.5108, 25.86, -46.8624, 24.8309, -38.7835, 32.1585, -32.9631, 39.7949, -35.7937, 43.6248, -31.0113, 39.1939, -24.178, 43.2724, -15.7555, 51.3809, -14.9943, 52.7579, -9.02406, 45.8018, -4.78842, 45.8242, 4.56955, 52.8004, 8.77191, 51.4519, 14.7487, 43.3472, 15.5486, 39.309, 23.9904, 43.7725, 30.8025, 39.9655, 35.6032, 32.3156, 32.8091, 25.0159, 38.6645, 26.0836, 46.7383, 20.5713, 49.413, 14.89, 43.5778)
+
+[node name="Sprite2D" type="Sprite2D" parent="RotatableRigidBody/GearCollisionPolygon"]
+rotation = -0.0907571
+scale = Vector2(0.11, 0.11)
+script = ExtResource("4_wcwec")
+border_color = Color(0.340291, 0.591861, 0.52575, 1)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+position = Vector2(231, 258)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+shape = SubResource("CircleShape2D_8lvy3")
+debug_color = Color(0, 0.6, 0.701961, 0.454902)
+
+[node name="PinJoint2D" type="PinJoint2D" parent="."]
+position = Vector2(231, 258)
+node_a = NodePath("../RotatableRigidBody")
+node_b = NodePath("../StaticBody2D")
+
+[node name="RotatableRigidBody2" type="RotatableRigidBody" parent="."]
+auto_rotate = false
+position = Vector2(533, 229)
+
+[node name="GearCollisionPolygon" type="GearCollisionPolygon" parent="RotatableRigidBody2"]
+teeth_count = 14
+tooth_width_angle = 46.8805
+up_tooth_width = 6.127
+down_tooth_width = 11.255
+tooth_height = 7.73
+radius = 46.8805
+scale = Vector2(3, 3)
+polygon = PackedVector2Array(5.6275, 45.7063, 3.0635, 53.4363, -3.0635, 53.4363, -5.6275, 45.7063, -14.7511, 43.625, -20.4138, 49.4783, -25.9346, 46.8212, -24.8926, 38.7439, -32.211, 32.9118, -39.8519, 35.7303, -43.6742, 30.9417, -39.2324, 24.1155, -43.2974, 15.6866, -51.4047, 14.9125, -52.7722, 8.94003, -45.8094, 4.71547, -45.8168, -4.64251, -52.7863, -8.85597, -51.4284, -14.8306, -43.3224, -15.6176, -39.2707, -24.053, -43.7234, -30.8721, -39.9087, -35.6668, -32.2634, -32.8605, -24.9543, -38.7043, -26.0091, -46.7798, -20.4925, -49.4457, -14.8206, -43.6015, -5.70028, -45.6973, -3.1486, -53.4314, 2.9784, -53.4411, 5.5547, -45.7152, 14.6816, -43.6484, 20.335, -49.5108, 25.86, -46.8624, 24.8309, -38.7835, 32.1585, -32.9631, 39.7949, -35.7937, 43.6248, -31.0113, 39.1939, -24.178, 43.2724, -15.7555, 51.3809, -14.9943, 52.7579, -9.02406, 45.8018, -4.78842, 45.8242, 4.56955, 52.8004, 8.77191, 51.4519, 14.7487, 43.3472, 15.5486, 39.309, 23.9904, 43.7725, 30.8025, 39.9655, 35.6032, 32.3156, 32.8091, 25.0159, 38.6645, 26.0836, 46.7383, 20.5713, 49.413, 14.89, 43.5778)
+
+[node name="Sprite2D" type="Sprite2D" parent="RotatableRigidBody2/GearCollisionPolygon"]
+scale = Vector2(0.115, 0.115)
+script = ExtResource("4_wcwec")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="."]
+position = Vector2(533, 229)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D2"]
+shape = SubResource("CircleShape2D_8lvy3")
+debug_color = Color(0, 0.6, 0.701961, 0.454902)
+
+[node name="PinJoint2D2" type="PinJoint2D" parent="."]
+position = Vector2(533, 229)
+node_a = NodePath("../RotatableRigidBody2")
+node_b = NodePath("../StaticBody2D2")
