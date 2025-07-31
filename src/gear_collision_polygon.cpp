@@ -62,22 +62,30 @@ PackedVector2Array GearCollisionPolygon::generate_gear_vertices() {
     const float TAU = 2.0f * PI;
     const float re = TAU / static_cast<float>(teeth_count); // 每个齿的弧度
     const float half_re = re / 2.0f;
-
+    const int point_count = 8;
     // 计算齿底Y坐标偏移
     const float base_offset = radius * std::abs(std::cos(half_re));
 
     // 第一个齿的基础顶点
-    Vector2 base_points[4] = {            //godot x 轴 向右为正,Y轴向下为正
+    Vector2 base_points[point_count] = {            //godot x 轴 向右为正,Y轴向下为正
         Vector2(down_tooth_width / 2.0f, base_offset),         // 右翅根（
+
+        Vector2(down_tooth_width / 2.0f - (down_tooth_width-up_tooth_width) / (6.0f*2.0f), base_offset+tooth_height*0.3),        
+        Vector2(down_tooth_width / 2.0f - (down_tooth_width-up_tooth_width)/(3.0f*2.0f), base_offset+tooth_height*0.6),
+
         Vector2(up_tooth_width / 2.0f, base_offset + tooth_height),   // 右齿顶
         Vector2(-up_tooth_width / 2.0f, base_offset + tooth_height),   // 左齿顶
+       
+        Vector2(-down_tooth_width / 2.0f + (down_tooth_width-up_tooth_width)/(3.0f*2.0f), base_offset+tooth_height*0.6),
+        Vector2(-down_tooth_width / 2.0f + (down_tooth_width-up_tooth_width) / (6.0f*2.0f), base_offset+tooth_height*0.3), 
+
         Vector2(-down_tooth_width / 2.0f, base_offset)          // 左翅根
         
         
     };
 
     // 预分配内存提高性能
-    vertices.resize(teeth_count * 4);
+    vertices.resize(teeth_count * point_count);
 
     // 对于每个齿生成顶点
     for (int i = 0; i < teeth_count; i++) {
@@ -87,7 +95,7 @@ PackedVector2Array GearCollisionPolygon::generate_gear_vertices() {
         const float sin_theta = std::sin(rotation_angle);
 
         // 预计算基础点旋转后的坐标
-        for (int j = 0; j < 4; j++) {
+        for (int j = 0; j < point_count; j++) {
             const Vector2& point = base_points[j];
             Vector2 rotated_point;
             
@@ -96,7 +104,7 @@ PackedVector2Array GearCollisionPolygon::generate_gear_vertices() {
             rotated_point.y = point.x * sin_theta + point.y * cos_theta;
             
             // 直接赋值给预分配数组
-            vertices.set(i * 4 + j, rotated_point);
+            vertices.set(i * point_count + j, rotated_point);
         }
     }
 

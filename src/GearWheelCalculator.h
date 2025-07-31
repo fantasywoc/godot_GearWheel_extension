@@ -15,7 +15,7 @@ private:
     float angle;     // 弦对应的圆心角（角度制）
     float height;
     int tooth_count;
-    float Error = 0.05;
+    float Error = 0.0001;
 public:
     // 构造函数：初始化半径和弦长
     GearWheelCalculator(float r, float c) : radius(r), chord(c) {
@@ -37,24 +37,24 @@ public:
     void calculateAngle() {
         float halfChord = chord / 2;
         float sinValue = halfChord / radius;
-        angle = 2 * asin(sinValue) * 180.0 / M_PI; // 弧度转角度[2](@ref)
+        angle = 2 * asin(sinValue) * 180.0 / M_PI; // 弧度转角度
     }
 
     // 判断角度是否可整除360°（误差±0.1°）
     bool isDivisibleBy360(int& count) const {
-        float Error = 0.05;
-        float ratio = 360.0 / angle * 0.5;
+        // float Error = 0.05;
+        float ratio = 360.0 / (angle * 2.0);
         float fractionalPart = ratio - std::floor(ratio);
         if (std::abs(fractionalPart) < Error || std::abs(1 - fractionalPart) < Error){
-            if(std::abs(fractionalPart) < Error){ count = int(ratio); }
-            if(std::abs(1 - fractionalPart) < Error){ count = int(ratio)+1; }
+            if(std::abs(fractionalPart) < Error){ count = std::round(ratio); }
+            if(std::abs(1 - fractionalPart) < Error){ count = std::ceil(ratio); }
             return true;
         }
         return false;
     }
 
  // 寻找最近的可整除半径（双向搜索）
-    float findNearestValidRadius(float step = 0.01) {
+    float findNearestValidRadius(float step = 0.001) {
         float originalRadius = radius;
         float upRadius = radius;   // 向上搜索的半径
         float downRadius = radius; // 向下搜索的半径
