@@ -1,12 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://dh0oj81pufivs"]
+[gd_scene load_steps=3 format=3 uid="uid://c7jrgvrcdl3ij"]
 
-[ext_resource type="Script" uid="uid://d4jtykcwlwdbx" path="res://example.gd" id="1_2jas5"]
-[ext_resource type="Script" uid="uid://delbtkx2u8olr" path="res://sprite_2d.gd" id="4_wcwec"]
+[ext_resource type="Script" uid="uid://delbtkx2u8olr" path="res://sprite_2d.gd" id="1_37kl0"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_8lvy3"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_8uh7m"]
 
-[node name="Node" type="Node"]
-script = ExtResource("1_2jas5")
+[node name="Node2D" type="Node2D"]
 
 [node name="RotatableRigidBody" type="RotatableRigidBody" parent="."]
 rotation_speed = 5.9
@@ -26,15 +24,13 @@ polygon = PackedVector2Array(5.6275, 45.7063, 3.0635, 53.4363, -3.0635, 53.4363,
 [node name="Sprite2D" type="Sprite2D" parent="RotatableRigidBody/GearCollisionPolygon"]
 rotation = -0.0907571
 scale = Vector2(0.11, 0.11)
-script = ExtResource("4_wcwec")
-border_color = Color(0.910106, 0.482842, 0.019122, 1)
-inner_color = Color(0.128542, 0.620206, 0.593398, 0.921569)
+script = ExtResource("1_37kl0")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 position = Vector2(231, 258)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-shape = SubResource("CircleShape2D_8lvy3")
+shape = SubResource("CircleShape2D_8uh7m")
 debug_color = Color(0, 0.6, 0.701961, 0.454902)
 
 [node name="PinJoint2D" type="PinJoint2D" parent="."]
@@ -58,13 +54,13 @@ polygon = PackedVector2Array(5.6275, 45.7063, 3.0635, 53.4363, -3.0635, 53.4363,
 
 [node name="Sprite2D" type="Sprite2D" parent="RotatableRigidBody2/GearCollisionPolygon"]
 scale = Vector2(0.115, 0.115)
-script = ExtResource("4_wcwec")
+script = ExtResource("1_37kl0")
 
 [node name="StaticBody2D2" type="StaticBody2D" parent="."]
 position = Vector2(533, 229)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D2"]
-shape = SubResource("CircleShape2D_8lvy3")
+shape = SubResource("CircleShape2D_8uh7m")
 debug_color = Color(0, 0.6, 0.701961, 0.454902)
 
 [node name="PinJoint2D2" type="PinJoint2D" parent="."]
